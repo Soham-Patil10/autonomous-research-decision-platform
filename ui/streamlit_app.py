@@ -18,7 +18,7 @@ ask_tab, review_tab, trace_tab = st.tabs(["Ask", "Approval queue", "Trace explor
 
 # --------------------------------------------------------------------------- #
 with ask_tab:
-    question = st.text_area("Question", "Should we expand into the German EV market?")
+    question = st.text_area("Question", "Which EU markets should we prioritise for expansion, and what are the risks?")
     if st.button("Submit", type="primary"):
         r = requests.post(f"{API}/tasks", json={"question": question}, timeout=30)
         st.session_state["task_id"] = r.json()["task_id"]

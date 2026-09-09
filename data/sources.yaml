@@ -1,0 +1,193 @@
+# Corpus manifest - the single place source URLs live.
+#
+# kind:
+#   auto    plain HTTP GET, downloaded by scripts/fetch_corpus.py
+#   edgar   resolved via the SEC submissions API (needs CORPUS_CONTACT_EMAIL)
+#   manual  you must download by hand; the script prints a checklist
+#
+# redistributable:
+#   true    safe to commit to a public repo
+#   false   free to download, restricted to redistribute -> stays gitignored
+#
+# verified:
+#   false   URL not yet confirmed reachable. The first successful fetch flips this
+#           in MANIFEST.json; if an entry 404s, fix the url here, not in the script.
+
+sources:
+  # ---------------------------------------------------------------- #
+  # Regulation - the "regulatory cost" leg of the planted story.
+  # EUR-Lex CELEX URLs are the most stable identifiers in this manifest.
+  # ---------------------------------------------------------------- #
+  - id: eu_co2_standards_2019R0631
+    title: "Regulation (EU) 2019/631 - CO2 emission performance standards for new passenger cars and vans"
+    kind: auto
+    url: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32019R0631"
+    filename: eu_co2_standards_2019R0631.html
+    redistributable: true
+    license: "(c) European Union, 1998-2024. Reuse authorised under Decision 2011/833/EU."
+    verified: false
+
+  - id: eu_co2_amendment_2023R0851
+    title: "Regulation (EU) 2023/851 - amending 2019/631 (strengthened 2030/2035 targets)"
+    kind: auto
+    url: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32023R0851"
+    filename: eu_co2_amendment_2023R0851.html
+    redistributable: true
+    license: "(c) European Union. Decision 2011/833/EU."
+    verified: false
+
+  - id: eu_afir_2023R1804
+    title: "Regulation (EU) 2023/1804 - Alternative Fuels Infrastructure Regulation (AFIR)"
+    kind: auto
+    url: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32023R1804"
+    filename: eu_afir_2023R1804.html
+    redistributable: true
+    license: "(c) European Union. Decision 2011/833/EU."
+    verified: false
+    notes: "The completeness critic should catch a draft that ignores this. Keep it in."
+
+  - id: eu_batteries_2023R1542
+    title: "Regulation (EU) 2023/1542 - Batteries and waste batteries"
+    kind: auto
+    url: "https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32023R1542"
+    filename: eu_batteries_2023R1542.html
+    redistributable: true
+    license: "(c) European Union. Decision 2011/833/EU."
+    verified: false
+
+  # ---------------------------------------------------------------- #
+  # Competitor filings - real risk-factor prose.
+  # ---------------------------------------------------------------- #
+  - id: tesla_10k
+    title: "Tesla, Inc. - latest annual report (Form 10-K)"
+    kind: edgar
+    cik: "0001318605"
+    form: "10-K"
+    filename: tesla_10k.html
+    redistributable: true
+    license: "US government-hosted filing; public domain as a US work product."
+    verified: false
+
+  - id: rivian_10k
+    title: "Rivian Automotive, Inc. - latest annual report (Form 10-K)"
+    kind: edgar
+    cik: "0001874178"
+    form: "10-K"
+    filename: rivian_10k.html
+    redistributable: true
+    license: "US government-hosted filing."
+    verified: false
+
+  # ---------------------------------------------------------------- #
+  # Market data - download by hand. These sites paginate by release and
+  # their deep links rot every quarter, so a hardcoded URL is a liability.
+  # ---------------------------------------------------------------- #
+  - id: acea_registrations
+    title: "ACEA - new car registrations by power source, EU-27 by country"
+    kind: manual
+    url: "https://www.acea.auto/press-releases/"
+    filename: acea_registrations.pdf
+    redistributable: false
+    license: "Free to download; redistribution restricted. Keep out of git."
+    verified: false
+    notes: >
+      THE primary source now that scope is EU-wide - it is the only one that
+      covers all 27 member states in one table. Extract per-country BEV columns
+      to CSV (header: market,year,registrations,source) and pass it to
+      seed_db.py --registrations. Until you do, 50 of 56 registration rows are
+      synthesised from population and marked source='estimated'.
+      Note ACEA tables often include EFTA/UK columns - drop them, or you will
+      seed non-EU countries into an EU-27 dataset (see golden case g011).
+
+  - id: kba_neuzulassungen
+    title: "KBA - Neuzulassungen von Pkw nach Kraftstoffarten (FZ series)"
+    kind: manual
+    url: "https://www.kba.de/DE/Statistik/Fahrzeuge/Neuzulassungen/neuzulassungen_node.html"
+    filename: kba_neuzulassungen.xlsx
+    redistributable: true
+    license: "KBA data, free reuse with attribution."
+    verified: false
+    notes: >
+      Germany only, but the authoritative national source. Useful precisely
+      because it will disagree slightly with ACEA's German column - a genuine
+      cross-source reconciliation case for the fact critic.
+
+  - id: sweden_mobility_sweden
+    title: "Mobility Sweden - new registrations by powertrain (Sweden)"
+    kind: manual
+    url: "https://mobilitysweden.se/statistik"
+    filename: sweden_registrations.pdf
+    redistributable: false
+    license: "Free to download; redistribution restricted."
+    verified: false
+    notes: >
+      Needed for the SECOND cliff. Sweden abolished the klimatbonus abruptly in
+      Nov 2022, a year before Germany ended the Umweltbonus - that offset is what
+      stops the agent from pattern-matching "everything broke in 2024".
+
+  - id: iea_global_ev_outlook
+    title: "IEA - Global EV Outlook (latest edition)"
+    kind: manual
+    url: "https://www.iea.org/reports/global-ev-outlook-2025"
+    filename: iea_global_ev_outlook.pdf
+    redistributable: false
+    license: "Free registration; redistribution restricted. Keep out of git."
+    verified: false
+    notes: "Best long-form analytical prose in the corpus. Dense tables inside paragraphs."
+
+  - id: eafo_eu_country_comparison
+    title: "EAFO - EU country comparison (vehicle stock + charging points, all member states)"
+    kind: manual
+    url: "https://alternative-fuels-observatory.ec.europa.eu/transport-mode/road"
+    filename: eafo_eu_countries.csv
+    redistributable: true
+    license: "(c) European Union. Decision 2011/833/EU."
+    verified: false
+    notes: >
+      Charging-point density per member state - the AFIR compliance angle needs
+      this, and it is what makes "which three markets should we prioritise"
+      answerable rather than a guess. Export the country-comparison view, not a
+      single country page.
+
+  - id: vw_annual_report
+    title: "Volkswagen Group - latest annual report"
+    kind: manual
+    url: "https://www.volkswagen-group.com/en/publications"
+    filename: vw_annual_report.pdf
+    redistributable: false
+    license: "Corporate publication; redistribution restricted."
+    verified: false
+    notes: "Hundreds of pages of messy analytical prose. Excellent chunking stress test."
+
+# --------------------------------------------------------------------- #
+# Documents you write yourself. Without these the document agent has
+# nothing the research agent could not have found on the open web, and the
+# private-corpus half of hybrid RAG proves nothing.
+# --------------------------------------------------------------------- #
+synthetic_internal:
+  - filename: internal_strategy_memo_2025.md
+    prompt: >
+      A 2-page board memo from Acme Mobility's CSO recommending expansion into
+      the three largest EU markets by volume, written before the margin data came
+      in. It should be plausibly wrong - ranking by market SIZE where the data
+      says rank by margin STABILITY - so the system has to contradict an internal
+      document using external evidence.
+
+  - filename: internal_pricing_policy.md
+    prompt: >
+      Acme's discounting policy: approval thresholds, target gross margin by
+      market, and the escalation rule when margin falls below 15%. This is what
+      makes the German and Swedish margin collapses a POLICY BREACH, not just
+      two bad years.
+
+  - filename: internal_board_minutes_2024Q1.md
+    prompt: >
+      Minutes noting the German subsidy termination and authorising temporary
+      discounting "for two quarters". They should also reference the Swedish
+      experience of 2023 as a warning that was not acted on - the corpus knows
+      the pattern repeated; the database only shows that it did.
+
+  - filename: internal_supply_agreement_summary.md
+    prompt: >
+      A battery cell supply contract summary with a take-or-pay clause. Explains
+      why COGS stayed high when volume fell - findable only in the private corpus.
