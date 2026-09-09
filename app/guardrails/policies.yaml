@@ -1,0 +1,49 @@
+# Tool-permission policy. This file is the security boundary of the platform.
+#
+# An agent can only call a tool listed under its own role. Anything not listed is
+# denied by default - capability is granted here, never claimed by the agent.
+
+defaults:
+  deny_by_default: true
+  max_tool_calls_per_task: 40
+
+agents:
+  supervisor:
+    allowed_tools: []          # the supervisor plans; it does not act
+
+  research:
+    allowed_tools:
+      - web_search
+    limits:
+      web_search: { max_calls: 10, max_results: 10 }
+
+  document:
+    allowed_tools:
+      - doc_search
+    limits:
+      doc_search: { max_calls: 15 }
+
+  data:
+    allowed_tools:
+      - sql_schema
+      - sql_query
+    limits:
+      sql_query: { max_calls: 8, max_rows: 5000, timeout_seconds: 15 }
+
+  synthesis:
+    allowed_tools:
+      - doc_search           # may re-check a citation while writing
+
+# Tools that always stop for a human regardless of who calls them.
+sensitive_tools:
+  - send_email
+  - post_to_slack
+  - write_to_crm
+  - export_report
+
+# Risk escalation ladder. See app/guardrails/risk_classifier.py.
+risk_actions:
+  low: auto_execute
+  medium: notify_human
+  high: require_approval
+  critical: human_takeover

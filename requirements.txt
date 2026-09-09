@@ -1,0 +1,41 @@
+# --- core ---
+fastapi>=0.115
+uvicorn[standard]>=0.32
+pydantic>=2.9
+pydantic-settings>=2.6
+python-dotenv>=1.0
+
+# --- orchestration ---
+langgraph>=0.2.50
+langchain-core>=0.3
+
+# --- llm providers ---
+anthropic>=0.40
+openai>=1.55
+
+# --- retrieval ---
+chromadb>=0.5
+rank-bm25>=0.2.2
+sentence-transformers>=3.3
+tiktoken>=0.8
+
+# --- storage ---
+sqlalchemy>=2.0
+psycopg[binary]>=3.2
+alembic>=1.14
+redis>=5.2
+
+# --- tools ---
+tavily-python>=0.5
+sqlglot>=25.30
+
+# --- observability ---
+opentelemetry-sdk>=1.28
+opentelemetry-instrumentation-fastapi>=0.49
+structlog>=24.4
+
+# --- ui / eval / dev ---
+streamlit>=1.40
+pytest>=8.3
+pytest-asyncio>=0.24
+ruff>=0.8
