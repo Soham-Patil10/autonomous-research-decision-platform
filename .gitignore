@@ -13,4 +13,6 @@ traces/
 *.sqlite3
 data/documents/*
 !data/documents/.gitkeep
+# Provenance record: small, and the only proof of where the corpus came from.
+!data/documents/MANIFEST.json
 .DS_Store

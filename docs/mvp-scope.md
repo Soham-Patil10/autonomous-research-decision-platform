@@ -1,11 +1,16 @@
-# MVP scope — market-entry analysis
+# MVP scope — EU market-entry analysis
 
 ## The single scenario
 
-> *"Should Acme Mobility expand into the German electric-vehicle market?"*
+> *"Which EU markets should Acme Mobility prioritise for expansion, and what are the risks?"*
 
 One scenario, done properly, beats five half-built ones. Everything in the MVP exists
 to answer this question with evidence.
+
+Scope is EU-27, fourteen markets, 2022–2025. **Widening from three markets to fourteen
+changed the task from comparison to discovery** — the agent is no longer told which
+countries to compare, it has to find the anomalies. That is a harder task and a better
+demonstration, and it costs nothing extra to run.
 
 ## What the MVP must do
 
@@ -14,6 +19,7 @@ to answer this question with evidence.
 - [ ] Research agent returns ≥3 web sources with URLs
 - [ ] Document agent returns ≥3 corpus passages with document id + locator
 - [ ] Data agent produces one SQL query that passes the guard and returns rows
+- [ ] That query finds **both** margin cliffs (Sweden 2023, Germany 2024), not just one
 - [ ] Synthesis produces claims, each carrying at least one evidence id
 - [ ] One reviewer scores the draft and can send it back once
 - [ ] Anything below the confidence threshold lands in the approval queue
@@ -34,18 +40,20 @@ Deferred, deliberately — each has a phase in the roadmap:
 
 ## Corpus you need before starting
 
-Put 10–30 documents in `data/documents/`:
+Fully specified in [data-sources.md](data-sources.md). Short version:
 
-| Document | Purpose |
-|---|---|
-| German EV registration statistics | the market-size question |
-| 2–3 competitor profiles | the competitive question |
-| An EU/German EV regulation summary | the regulatory question, and the one the completeness critic should catch being missed |
-| Your fictional company's annual report | internal-performance grounding |
-| An internal strategy memo | something only the private corpus knows |
+```bash
+python scripts/fetch_corpus.py
+```
 
-Deliberately include **one question the corpus cannot answer** — that is how you
-demonstrate the system refusing instead of fabricating.
+That pulls the EU regulations and SEC filings automatically and prints a checklist for
+the sources that must be downloaded by hand (KBA, ACEA, IEA, EAFO, OEM reports). Then
+write the four internal documents listed under `synthetic_internal:` in
+`data/sources.yaml` — without them the private-corpus half of hybrid RAG proves nothing.
+
+The data encodes a **planted story** whose three legs are each visible to exactly one
+agent, so no single specialist can answer the question alone. `scripts/seed_db.py
+--dry-run` prints it.
 
 ## Definition of done
 

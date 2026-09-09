@@ -13,12 +13,20 @@ governance and continuous evaluation.
 
 ## 1. The scenario this is built around
 
-**Market-entry analysis.** A company asks:
+**EU market-entry analysis.** A company asks:
 
-> *"Should we expand into the German electric-vehicle market?"*
+> *"Which EU markets should we prioritise for expansion, and what are the risks?"*
 
 The platform answers with a recommendation, a confidence score, the evidence behind every
 claim, and an explicit list of what it could not verify.
+
+Fourteen EU-27 markets, 2022–2025. The data is built so that **two** markets have a
+margin collapse, **in different years**, both caused by the same mechanism — an abrupt
+subsidy withdrawal. Markets that tapered their subsidies gradually did not break. An
+agent that pattern-matches one year finds one of the two and produces a cited, logical,
+incomplete answer. Catching that is what the critic panel is for.
+
+See [docs/data-sources.md](docs/data-sources.md).
 
 ## 2. What actually happens
 
@@ -99,6 +107,16 @@ docker compose up -d
 pip install -r requirements.txt
 ```
 
+Build the corpus and the database — see [docs/data-sources.md](docs/data-sources.md):
+
+```bash
+python scripts/fetch_corpus.py
+```
+
+```bash
+python scripts/seed_db.py --dry-run
+```
+
 ```bash
 python scripts/seed_db.py
 ```
@@ -118,7 +136,7 @@ streamlit run ui/streamlit_app.py
 Submit a task:
 
 ```bash
-curl -X POST localhost:8000/api/tasks -H "content-type: application/json" -d "{\"question\":\"Should we expand into the German EV market?\"}"
+curl -X POST localhost:8000/api/tasks -H "content-type: application/json" -d "{\"question\":\"Which EU markets should we prioritise for expansion, and what are the risks?\"}"
 ```
 
 ## 5. Build order
